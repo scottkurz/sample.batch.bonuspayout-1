@@ -46,9 +46,11 @@ This assumes you have the Gradle IDE tools installed into Eclipse.
 4.  In the Root Directory textbox, Paste in the repository directory.
 5.  Select *Browse...* button.
 6. **IMPORTANT:**  Un-select the parent project (*/pom.xml net.wasdev....*)
-![mvnImport Image](docs/images/mvnImport.jpg)
+![mvnImport Image](images/mvnImport.jpg)
 7. Select *Finish* now that only 2 checkboxes are selected.
-8.  This will create 2 projects in Eclipse: batch-bonuspayout-application, and batch-bonuspayout-wlpcfg
+8.  This will create 2 projects in Eclipse: batch-bonuspayout-application, and batch-bonuspayout-wlpcfg.    
+**Note:** Ignore the "Problem Occurred" dialog. Simply click "OK" if you see this:
+![ignoreErrorDialog Image](images/ignoreErrorDialog.jpg)
 
 **Note:** If you did not use Eclipse/WDT to clone the git repository, follow from step 3, but in step 4 simly use the path of the cloned repository directory.
 

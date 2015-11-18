@@ -40,6 +40,8 @@ This assumes you have the Gradle IDE tools installed into Eclipse.
 
 ### Import Maven projects into WDT
 
+**Note:** If you did not use Eclipse/WDT to clone the git repository, begin at step 3, and supply the path of the cloned repository directory in step 4.
+
 1.  In the Git Repository view, expand the bonuspayout repo to see the "Working Directory" folder
 2.  Right-click on this folder, and select *Copy path to Clipboard*
 3.  Select menu *File -> Import -> Maven -> Existing Maven Projects*
@@ -51,8 +53,8 @@ This assumes you have the Gradle IDE tools installed into Eclipse.
 8.  This will create 2 projects in Eclipse: batch-bonuspayout-application, and batch-bonuspayout-wlpcfg.    
 **Note:** Ignore the "Problem Occurred" dialog. Simply click "OK" if you see this:
 ![ignoreErrorDialog Image](images/ignoreErrorDialog.jpg)
-
-**Note:** If you did not use Eclipse/WDT to clone the git repository, follow from step 3, but in step 4 simly use the path of the cloned repository directory.
+9. Fix the red X by the batch-bonuspayout-application ![redX image](images/redX.jpg) by going to the  ***Markers*** or ***Problems*** view, right-clicking and selecting *Quick Fix*
+![quickFix Image](images/quickFix.jpg)
 
 ### Create a Runtime Environment and a Liberty Server
 
@@ -94,4 +96,5 @@ For the purposes of this sample, we will create the Liberty server (step 3 in th
 ## Tips
 
 * When importing the existing maven project into Eclipse, Eclipse will (by default) "helpfully" add this project to an (extraneous) ear. To turn this off, go to Preferences -> Java EE -> Project, and uncheck "Add project to an EAR" before you import the project. If you forgot to do this, just delete the ear project; no harm.
+
 

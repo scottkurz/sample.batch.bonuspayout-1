@@ -1,8 +1,3 @@
-## WARNING: NOT WORKING YET FOR this sample
-
-These instructions are common with other WebSphere samples on WASdev.   They are not yet complete for this particular sample, however.
-Though they provide some value in sketching out how one might ultimately bring this sample into WDT, this does not contain a complete sequence of working steps, so be forewarned !
-
 ## Eclipse / WDT
 
 The WebSphere Development Tools (WDT) for Eclipse can be used to control the server (start/stop/dump/etc.), it also supports incremental publishing with minimal restarts, working with a debugger to step through your applications, etc.
@@ -49,10 +44,13 @@ This assumes you have the Gradle IDE tools installed into Eclipse.
 2.  Right-click on this folder, and select *Copy path to Clipboard*
 3.  Select menu *File -> Import -> Maven -> Existing Maven Projects*
 4.  In the Root Directory textbox, Paste in the repository directory.
-5.  Select *Browse...* button and select *Finish* (confirm it finds 3 pom.xml files)
-6.  This will create 3 projects in Eclipse: batch-bonuspayout, batch-bonuspayout-application, and batch-bonuspayout-wlpcfg
+5.  Select *Browse...* button.
+6. **IMPORTANT:**  Un-select the parent project (*/pom.xml net.wasdev....*)
+![mvnImport Image](docs/images/mvnImport.jpg)
+7. Select *Finish* now that only 2 checkboxes are selected.
+8.  This will create 2 projects in Eclipse: batch-bonuspayout-application, and batch-bonuspayout-wlpcfg
 
-:star: *Note:* If you did not use Eclipse/WDT to clone the git repository, follow from step 3, but navigate to the cloned repository directory rather than pasting its name in step 4.
+**Note:** If you did not use Eclipse/WDT to clone the git repository, follow from step 3, but in step 4 simly use the path of the cloned repository directory.
 
 ### Create a Runtime Environment and a Liberty Server
 
@@ -94,3 +92,4 @@ For the purposes of this sample, we will create the Liberty server (step 3 in th
 ## Tips
 
 * When importing the existing maven project into Eclipse, Eclipse will (by default) "helpfully" add this project to an (extraneous) ear. To turn this off, go to Preferences -> Java EE -> Project, and uncheck "Add project to an EAR" before you import the project. If you forgot to do this, just delete the ear project; no harm.
+

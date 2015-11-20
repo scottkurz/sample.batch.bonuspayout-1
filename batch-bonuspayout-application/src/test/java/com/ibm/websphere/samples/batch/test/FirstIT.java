@@ -40,64 +40,67 @@ import net.sf.expectit.Result;
 
 public class FirstIT {
 
-    public static final String WIN_CMD = System.getenv("COMSPEC");
-    private Expect expect;
-    private Process process;
+	public static final String WIN_CMD = System.getenv("COMSPEC");
+	private Expect expect;
+	private Process process;
+	private String wlpInstallDir = System.getProperty("wlp.install.dir");
+	private String wlpUserDir = System.getProperty("wlp.user.dir");
+	private String serverHost = System.getProperty("serverHost");
+	private String httpsPort = System.getProperty("httpsPort");
 
-    @BeforeClass
-    public static void ignoreOnNonWindows() {
-        assumeTrue(WIN_CMD != null && new File(WIN_CMD).canExecute());
-    }
+	@BeforeClass
+	public static void ignoreOnNonWindows() {
+		assumeTrue(WIN_CMD != null && new File(WIN_CMD).canExecute());
+	}
 
-    @Before
-    public void setup() throws IOException {
-        ProcessBuilder builder = new ProcessBuilder(WIN_CMD, "/Q");
-        process = builder.start();
-        expect = new ExpectBuilder()
-                .withInputs(process.getInputStream(), process.getErrorStream())
-                .withOutput(process.getOutputStream())
-                .withInputFilters(removeNonPrintable())
-                .withEchoInput(System.err)
-                .withEchoOutput(System.out)
-                .build();
-    }
+	@Before
+	public void setup() throws IOException {
+		ProcessBuilder builder = new ProcessBuilder(WIN_CMD, "/Q");
+		process = builder.start();
+		expect = new ExpectBuilder()
+				.withInputs(process.getInputStream(), process.getErrorStream())
+				.withOutput(process.getOutputStream())
+				.withInputFilters(removeNonPrintable())
+				.withEchoInput(System.err)
+				.withEchoOutput(System.out)
+				.build();
+	}
 
-    @After
-    public void cleanup() throws IOException, InterruptedException {
-        process.destroy();
-        process.waitFor();
-        expect.close();
-    }
-    
-    @Test
-    public void testBP() throws Exception {
-    	String submitCmd = "C:/WLPS/8557.full.1/bin/batchManager submit --batchManager=localhost:9443 " +
-    "--trustSslCertificates --user=bob --password=bobpwd " + 
-    			"--applicationName=batch-bonuspayout-application --jobXMLName=BonusPayoutJob " + 
-    "--jobPropertiesFile=C:/git/sample.batch.bonuspayout/batch-bonuspayout-wlpcfg/" +
-    			"shared/resources/runToCompletionParms.txt --wait --pollingInterval_s=2";
-        expect.sendLine(submitCmd);
+	@After
+	public void cleanup() throws IOException, InterruptedException {
+		process.destroy();
+		process.waitFor();
+		expect.close();
+	}
 
-        expect.sendLine("exit");
-        // expect the process to finish
-        expect.expect(eof());
-    	 
+	@Test
+	public void testBP() throws Exception {
+		String submitCmd = wlpInstallDir + "/bin/batchManager submit " +
+	            "--batchManager=" +	serverHost + ":" + httpsPort + " " +
+				"--trustSslCertificates --user=bob --password=bobpwd " + 
+				"--applicationName=batch-bonuspayout-application --jobXMLName=BonusPayoutJob " + 
+				"--jobPropertiesFile=" + wlpUserDir + "/shared/resources/runToCompletionParms.txt " +
+				"--wait --pollingInterval_s=2";
+		expect.sendLine(submitCmd);
 
-    }
+		expect.sendLine("exit");
+		// expect the process to finish
+		expect.expect(eof());
+	}
 
-    @Test
-    @Ignore
-    public void test() throws IOException, InterruptedException {
+	@Test
+	@Ignore
+	public void test() throws IOException, InterruptedException {
 
-        System.out.println(expect.expect(contains(">")).getBefore());
-        expect.sendLine("echo test-123");
-        Result res = expect.expect(contains("test-123"));
-        assertTrue(res.isSuccessful());
-        assertFalse(res.getBefore().contains("echo"));
-        assertTrue(expect.expect(contains(">")).isSuccessful());
-        expect.sendLine("echo %cd%");
-        System.err.println("pwd: " + expect.expect(contains("\n")).getBefore());
-        expect.sendLine("exit");
-        assertTrue(expect.expect(eof()).isSuccessful());
-    }
+		System.out.println(expect.expect(contains(">")).getBefore());
+		expect.sendLine("echo test-123");
+		Result res = expect.expect(contains("test-123"));
+		assertTrue(res.isSuccessful());
+		assertFalse(res.getBefore().contains("echo"));
+		assertTrue(expect.expect(contains(">")).isSuccessful());
+		expect.sendLine("echo %cd%");
+		System.err.println("pwd: " + expect.expect(contains("\n")).getBefore());
+		expect.sendLine("exit");
+		assertTrue(expect.expect(eof()).isSuccessful());
+	}
 }

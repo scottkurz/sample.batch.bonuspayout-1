@@ -31,6 +31,11 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <httpsPort>9443</httpsPort>
+        <serverHost>localhost</serverHost>
+        <!-- For tests which don't run in the server, but we use the name of the equivalent property in a Liberty server -->
+        <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
+        <server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
     </properties>
 
     <dependencies>
@@ -77,7 +82,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>../batch-bonuspayout-wlpcfg/servers/BonusPayout/apps</outputDirectory>
+                            <outputDirectory>${server.config.dir}/apps</outputDirectory>
                             <silent>true</silent>
                             <stripVersion>true</stripVersion>
                             <artifactItems>
@@ -95,8 +100,9 @@
 
             <!-- Nothing to run in test phase -->
             <plugin>
-            	<groupId>org.apache.maven.plugins</groupId>
-            	<artifactId>maven-surefire-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19</version>
                 <executions>
                     <execution>
                         <id>default-test</id>
@@ -104,15 +110,15 @@
                             <skip>true</skip>
                         </configuration>
                     </execution>
-            	</executions>
+                </executions>
             </plugin>
     
             <!-- Run integration tests against the app in the server -->
             <plugin>
-            	<groupId>org.apache.maven.plugins</groupId>
-            	<artifactId>maven-failsafe-plugin</artifactId>
-            	<version>2.18.1</version>
-            	<executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
                     <execution>
                         <phase>integration-test</phase>
                         <id>integration-test</id>
@@ -120,6 +126,12 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
+                            <systemPropertyVariables>
+                                <wlp.install.dir>${wlp.install.dir}</wlp.install.dir>
+                                <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
+                                <httpsPort>${httpsPort}</httpsPort>
+                                <serverHost>${serverHost}</serverHost>
+                            </systemPropertyVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -128,7 +140,7 @@
                             <goal>verify</goal>
                         </goals>
                     </execution>
-            	</executions>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>net.wasdev.wlp.maven.plugins</groupId>
@@ -136,14 +148,31 @@
                 <version>1.1</version>
                 <executions>
                     <execution>
+                        <id>install-features</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>install-feature</goal>
+                        </goals>
+                        <configuration>
+                            <features>
+                                <acceptLicense>true</acceptLicense>
+                                <feature>batchManagement-1.0</feature>
+                                <feature>localConnector-1.0</feature>
+                                <!-- This sample can work with or without CDI configured -->
+                                <feature>cdi-1.2</feature>
+                                <feature>jsf-2.2</feature>
+                                <feature>jaxrs-2.0</feature>
+                            </features>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>start-server</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>start-server</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipTests}</skip>
-                            <configFiles>${project.basedir}/../batch-bonuspayout-wlpcfg/servers/BonusPayout/server.xml</configFiles>
+                            <configFiles>${server.config.dir}/server.xml</configFiles>
                         </configuration>
                     </execution>
                     <execution>
@@ -152,15 +181,13 @@
                         <goals>
                             <goal>stop-server</goal>
                         </goals>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <installDirectory>${libertyRoot}</installDirectory>
+                    <skip>${skipTests}</skip>
+                    <installDirectory>${wlp.install.dir}</installDirectory>
                     <serverName>BonusPayout</serverName>
-                    <userDirectory>${project.basedir}/../batch-bonuspayout-wlpcfg</userDirectory>
+                    <userDirectory>${wlp.user.dir}</userDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -170,7 +197,7 @@
             <id>check-liberty-present</id>
             <activation>
                 <file>
-                    <exists>${libertyRoot}/lib/ws-launch.jar</exists>
+                    <exists>${wlp.install.dir}/lib/ws-launch.jar</exists>
                 </file>
             </activation>
             <properties>

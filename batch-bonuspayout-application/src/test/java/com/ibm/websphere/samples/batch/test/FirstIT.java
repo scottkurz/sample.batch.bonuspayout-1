@@ -43,6 +43,7 @@ public class FirstIT {
 	public static final String WIN_CMD = System.getenv("COMSPEC");
 	private Expect expect;
 	private Process process;
+	private String warName = System.getProperty("warName");
 	private String wlpInstallDir = System.getProperty("wlp.install.dir");
 	private String wlpUserDir = System.getProperty("wlp.user.dir");
 	private String serverHost = System.getProperty("serverHost");
@@ -78,7 +79,8 @@ public class FirstIT {
 		String submitCmd = wlpInstallDir + "/bin/batchManager submit " +
 	            "--batchManager=" +	serverHost + ":" + httpsPort + " " +
 				"--trustSslCertificates --user=bob --password=bobpwd " + 
-				"--applicationName=batch-bonuspayout-application --jobXMLName=BonusPayoutJob " + 
+				//"--applicationName=batch-bonuspayout-application --jobXMLName=BonusPayoutJob " + 
+				"--applicationName=" + warName + " --jobXMLName=BonusPayoutJob " +
 				"--jobPropertiesFile=" + wlpUserDir + "/shared/resources/runToCompletionParms.txt " +
 				"--wait --pollingInterval_s=2";
 		expect.sendLine(submitCmd);

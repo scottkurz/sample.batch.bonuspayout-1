@@ -30,9 +30,18 @@
     </scm>
 
     <properties>
-        <skipTests>true</skipTests>
-        <httpsPort>9443</httpsPort>
+
+        <!-- EDIT ME -->
         <serverHost>localhost</serverHost>
+        <httpsPort>9443</httpsPort>
+
+        <!--
+        <warPath>${project.build.directory}/${project.artifactId}-${project.version}.war</warPath>
+        <warName>BonusPayout-1.0</warName>
+-->
+        <warName>batch-bonuspayout-application</warName>
+        <warPath>${project.build.directory}/${warName}.war</warPath>
+        <skipTests>true</skipTests>
         <!-- For tests which don't run in the server, but we use the name of the equivalent property in a Liberty server -->
         <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
         <server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
@@ -69,6 +78,7 @@
                 <version>2.6</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>${warName}</warName>
                 </configuration>
             </plugin>
             <!--
@@ -133,6 +143,7 @@
                                 <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
                                 <httpsPort>${httpsPort}</httpsPort>
                                 <serverHost>${serverHost}</serverHost>
+                                <warName>${warName}</warName>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -184,6 +195,8 @@
                             <goal>deploy</goal>
                         </goals>
                         <configuration>
+                            <appArchive>${warPath}</appArchive>
+                            <!--
                             <appArtifact>
                                 <groupId>net.wasdev.wlp.sample</groupId>
                                 <artifactId>batch-bonuspayout-application</artifactId>
@@ -191,6 +204,7 @@
                                 <type>war</type>
                              </appArtifact>
                              <stripVersion>true</stripVersion>
+-->
                         </configuration>
                     </execution>
                     <execution>
@@ -200,6 +214,8 @@
                             <goal>undeploy</goal>
                         </goals>
                         <configuration>
+                            <appArchive>${warPath}</appArchive>
+                                    <!--
                             <appArtifact>
                                 <groupId>net.wasdev.wlp.sample</groupId>
                                 <artifactId>batch-bonuspayout-application</artifactId>
@@ -207,6 +223,7 @@
                                 <type>war</type>
                              </appArtifact>
                              <stripVersion>true</stripVersion>
+-->
                         </configuration>
                     </execution>
                     <execution>

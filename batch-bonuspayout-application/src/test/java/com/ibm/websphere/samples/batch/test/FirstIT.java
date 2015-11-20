@@ -38,7 +38,7 @@ import net.sf.expectit.ExpectBuilder;
 import net.sf.expectit.Result;
 
 
-public class FirstTest {
+public class FirstIT {
 
     public static final String WIN_CMD = System.getenv("COMSPEC");
     private Expect expect;

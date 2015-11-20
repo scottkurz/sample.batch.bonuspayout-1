@@ -71,6 +71,7 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -97,6 +98,7 @@
                     </execution>
                 </executions>
             </plugin>
+-->
 
             <!-- Nothing to run in test phase -->
             <plugin>
@@ -176,6 +178,38 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>deploy</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <appArtifact>
+                                <groupId>net.wasdev.wlp.sample</groupId>
+                                <artifactId>batch-bonuspayout-application</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+                                <type>war</type>
+                             </appArtifact>
+                             <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>undeploy</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>undeploy</goal>
+                        </goals>
+                        <configuration>
+                            <appArtifact>
+                                <groupId>net.wasdev.wlp.sample</groupId>
+                                <artifactId>batch-bonuspayout-application</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+                                <type>war</type>
+                             </appArtifact>
+                             <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>stop-server</id>
                         <phase>post-integration-test</phase>
                         <goals>
@@ -186,8 +220,8 @@
                 <configuration>
                     <skip>${skipTests}</skip>
                     <installDirectory>${wlp.install.dir}</installDirectory>
-                    <serverName>BonusPayout</serverName>
                     <userDirectory>${wlp.user.dir}</userDirectory>
+                    <serverName>BonusPayout</serverName>
                 </configuration>
             </plugin>
         </plugins>

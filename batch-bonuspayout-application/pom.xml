@@ -137,15 +137,6 @@
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <wlp.install.dir>${wlp.install.dir}</wlp.install.dir>
-                                <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
-                                <httpsPort>${httpsPort}</httpsPort>
-                                <serverHost>${serverHost}</serverHost>
-                                <warName>${warName}</warName>
-                            </systemPropertyVariables>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>verify-tests</id>
@@ -154,6 +145,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <wlp.install.dir>${wlp.install.dir}</wlp.install.dir>
+                        <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
+                        <httpsPort>${httpsPort}</httpsPort>
+                        <serverHost>${serverHost}</serverHost>
+                        <warName>${warName}</warName>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>net.wasdev.wlp.maven.plugins</groupId>
@@ -179,13 +179,18 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>run-server</id>
+                        <goals>
+                            <goal>run-server</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>start-server</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>start-server</goal>
                         </goals>
                         <configuration>
-                            <configFiles>${server.config.dir}/server.xml</configFiles>
                         </configuration>
                     </execution>
                     <execution>
@@ -196,6 +201,7 @@
                         </goals>
                         <configuration>
                             <appArchive>${warPath}</appArchive>
+                            <skip>${skipDeploy}</skip>
                             <!--
                             <appArtifact>
                                 <groupId>net.wasdev.wlp.sample</groupId>
@@ -209,12 +215,13 @@
                     </execution>
                     <execution>
                         <id>undeploy</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>undeploy</goal>
                         </goals>
                         <configuration>
-                            <appArchive>${warPath}</appArchive>
+                            <appArchive>${warName}</appArchive>
+                            <skip>${skipDeploy}</skip>
                                     <!--
                             <appArtifact>
                                 <groupId>net.wasdev.wlp.sample</groupId>
@@ -238,6 +245,7 @@
                     <skip>${skipTests}</skip>
                     <installDirectory>${wlp.install.dir}</installDirectory>
                     <userDirectory>${wlp.user.dir}</userDirectory>
+                    <configFiles>${server.config.dir}/server.xml</configFiles>
                     <serverName>BonusPayout</serverName>
                 </configuration>
             </plugin>

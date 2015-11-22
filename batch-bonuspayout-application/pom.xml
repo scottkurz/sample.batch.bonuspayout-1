@@ -35,12 +35,10 @@
         <serverHost>localhost</serverHost>
         <httpsPort>9443</httpsPort>
 
-        <!--
-        <warPath>${project.build.directory}/${project.artifactId}-${project.version}.war</warPath>
-        <warName>BonusPayout-1.0</warName>
--->
+        <!-- Go through a bit of extra work to avoid dealing with the version name later on -->
         <warName>batch-bonuspayout-application</warName>
         <warPath>${project.build.directory}/${warName}.war</warPath>
+
         <skipTests>true</skipTests>
         <!-- For tests which don't run in the server, but we use the name of the equivalent property in a Liberty server -->
         <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
@@ -81,35 +79,6 @@
                     <warName>${warName}</warName>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${server.config.dir}/apps</outputDirectory>
-                            <silent>true</silent>
-                            <stripVersion>true</stripVersion>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.wasdev.wlp.sample</groupId>
-                                    <artifactId>batch-bonuspayout-application</artifactId>
-                                    <version>1.0-SNAPSHOT</version>
-                                    <type>war</type>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
-
             <!-- Nothing to run in test phase -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -151,6 +120,7 @@
                         <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
                         <httpsPort>${httpsPort}</httpsPort>
                         <serverHost>${serverHost}</serverHost>
+                        <!-- These batch tests require the app name so batchManager knows which application hosts the job -->
                         <warName>${warName}</warName>
                     </systemPropertyVariables>
                 </configuration>
@@ -200,17 +170,9 @@
                             <goal>deploy</goal>
                         </goals>
                         <configuration>
+                            <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
                             <appArchive>${warPath}</appArchive>
                             <skip>${skipDeploy}</skip>
-                            <!--
-                            <appArtifact>
-                                <groupId>net.wasdev.wlp.sample</groupId>
-                                <artifactId>batch-bonuspayout-application</artifactId>
-                                <version>1.0-SNAPSHOT</version>
-                                <type>war</type>
-                             </appArtifact>
-                             <stripVersion>true</stripVersion>
--->
                         </configuration>
                     </execution>
                     <execution>
@@ -220,17 +182,9 @@
                             <goal>undeploy</goal>
                         </goals>
                         <configuration>
+                            <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
                             <appArchive>${warName}</appArchive>
                             <skip>${skipDeploy}</skip>
-                                    <!--
-                            <appArtifact>
-                                <groupId>net.wasdev.wlp.sample</groupId>
-                                <artifactId>batch-bonuspayout-application</artifactId>
-                                <version>1.0-SNAPSHOT</version>
-                                <type>war</type>
-                             </appArtifact>
-                             <stripVersion>true</stripVersion>
--->
                         </configuration>
                     </execution>
                     <execution>

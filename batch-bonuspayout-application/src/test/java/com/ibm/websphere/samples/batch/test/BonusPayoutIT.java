@@ -27,6 +27,8 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.IOException;
 import java.security.acl.Group;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.ConsoleHandler;
 
 import javax.batch.runtime.BatchStatus;
 
@@ -42,9 +44,16 @@ import net.sf.expectit.ExpectBuilder;
 import net.sf.expectit.Result;
 
 
-public class FirstIT {
+public class BonusPayoutIT {
 
-	public static final String WIN_CMD = System.getenv("COMSPEC");
+	// How long we wait for matching command line output in these tests
+	private int COMMAND_LINE_WAIT_TIME_SECONDS = 25;
+	
+	private static enum SHELL_TYPE {UNIX, WINDOWS};
+	private static SHELL_TYPE shellType;
+	public static String WIN_CMD;
+    public static final String BIN_SH = "/bin/sh";
+	
 	private Expect expect;
 	private Process process;
 	private String warName = System.getProperty("warName");
@@ -59,13 +68,29 @@ public class FirstIT {
 					"--wait --pollingInterval_s=2 ";
 
 	@BeforeClass
-	public static void ignoreOnNonWindows() {
-		assumeTrue(WIN_CMD != null && new File(WIN_CMD).canExecute());
+	public static void setupForPlatformShell() {
+		
+		if (new File(BIN_SH).canExecute()) {
+			shellType = SHELL_TYPE.UNIX;
+		} else {
+			 WIN_CMD = System.getenv("COMSPEC");
+			if (WIN_CMD != null && new File(WIN_CMD).canExecute()) {
+				shellType = SHELL_TYPE.WINDOWS;
+			}
+			else {
+				throw new IllegalStateException("Unable to find either /bin/sh or Windows command shells.");
+			}
+		}
 	}
 
 	@Before
 	public void setup() throws IOException {
-		ProcessBuilder builder = new ProcessBuilder(WIN_CMD, "/Q");
+		ProcessBuilder builder = null;
+		if (shellType == SHELL_TYPE.WINDOWS) {
+			builder = new ProcessBuilder(WIN_CMD, "/Q");
+		} else {
+			builder = new ProcessBuilder(BIN_SH);
+		}
 		process = builder.start();
 		expect = new ExpectBuilder()
 				.withInputs(process.getInputStream(), process.getErrorStream())
@@ -73,6 +98,7 @@ public class FirstIT {
 				.withInputFilters(removeNonPrintable())
 				.withEchoInput(System.err)
 				.withEchoOutput(System.out)
+				.withTimeout(COMMAND_LINE_WAIT_TIME_SECONDS, TimeUnit.SECONDS)
 				.build();
 	}
 

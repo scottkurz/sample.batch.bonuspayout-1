@@ -48,7 +48,7 @@
         <warName>batch-bonuspayout-application</warName>
         <warPath>${project.build.directory}/${warName}.war</warPath>
 
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
         <!-- For tests which don't run in the server, but we use the name of the equivalent property in a Liberty server -->
         <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
         <server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
@@ -143,13 +143,11 @@
                 <version>1.1</version>
                 <executions>
                                     <execution>
-                        <id>pre-start-server</id>
+                        <id>install-server</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>start-server</goal>
+                            <goal>install-server</goal>
                         </goals>
-                        <configuration>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>install-features</id>
@@ -235,6 +233,7 @@
             </plugin>
         </plugins>
     </build>
+    <!-- 
     <profiles>
         <profile>
             <id>check-liberty-present</id>
@@ -247,5 +246,5 @@
                 <skipTests>false</skipTests>
             </properties>
         </profile>
-    </profiles>
+    </profiles> -->
 </project>

@@ -30,6 +30,10 @@
         <url>git@github.com:WASdev/sample.batch.bonuspayout.git</url>
     </scm>
 
+    <build>
+        <defaultGoal>install</defaultGoal>
+    </build>
+
     <modules>
         <module>batch-bonuspayout-wlpcfg</module>
         <module>batch-bonuspayout-application</module>

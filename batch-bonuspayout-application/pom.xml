@@ -191,7 +191,6 @@
                         </goals>
                         <!-- Configuring here means we can't deploy with single goal from CLI -->
                         <configuration>
-                            <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
                             <appArchive>${warPath}</appArchive>
                             <skip>${skipDeploy}</skip>
                         </configuration>
@@ -207,9 +206,8 @@
                             <!-- Works on Mac -->
                             <!--
                             <appArchive>${warName}.war</appArchive>
-                            <appArchive>${warPath}</appArchive>
--->
                             <appArchive>${warName}</appArchive>
+-->
 
                             <skip>${skipDeploy}</skip>
                         </configuration>
@@ -223,16 +221,19 @@
                     </execution>
                 </executions>
                 <configuration>
-                <!-- 
+                    <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
+                    <appArchive>${warPath}</appArchive>
+                    <!-- Use skipTests as a signal to skip all the WAS server stuff -->
                     <skip>${skipTests}</skip>
+                    <!--
                     <installDirectory>${wlp.install.dir}</installDirectory>
                     -->
-                            <assemblyArtifact>
-            <groupId>com.ibm.websphere.appserver.runtime</groupId>
-            <artifactId>wlp-webProfile7</artifactId>
-            <version>8.5.5.7</version>
-            <type>zip</type>
-        </assemblyArtifact>
+                    <assemblyArtifact>
+                        <groupId>com.ibm.websphere.appserver.runtime</groupId>
+                        <artifactId>wlp-webProfile7</artifactId>
+                        <version>8.5.5.7</version>
+                        <type>zip</type>
+                    </assemblyArtifact>
                     <userDirectory>${wlp.user.dir}</userDirectory>
                     <configFiles>${server.config.dir}/server.xml</configFiles>
                     <serverName>BonusPayout</serverName>

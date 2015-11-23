@@ -29,6 +29,15 @@
         <url>git@github.com:WASdev/sample.batch.bonuspayout.git</url>
     </scm>
 
+
+<repositories>
+    <repository>
+      <id>ibm-maven-repo</id>
+      <name>ibm-maven-repo</name>
+      <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/repository/</url>
+    </repository>
+</repositories>
+
     <properties>
 
         <!-- EDIT ME -->
@@ -116,7 +125,10 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
+                    <!--  
                         <wlp.install.dir>${wlp.install.dir}</wlp.install.dir>
+                     -->   
+                     <wlp.install.dir>${project.build.directory}/liberty/wlp</wlp.install.dir>
                         <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
                         <httpsPort>${httpsPort}</httpsPort>
                         <serverHost>${serverHost}</serverHost>
@@ -130,9 +142,18 @@
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
+                                    <execution>
+                        <id>pre-start-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start-server</goal>
+                        </goals>
+                        <configuration>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>install-features</id>
-                        <phase>pre-i/Users/scottkurz/git/sample.batch.bonuspayout-1/batch-bonuspayout-wlpcfg/servers/ntegration-test</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>install-feature</goal>
                         </goals>
@@ -146,9 +167,10 @@
                                 <feature>jsf-2.2</feature>
                                 <feature>jaxrs-2.0</feature>
                             </features>
+                                             
                         </configuration>
                     </execution>
-                    <execution>
+                    <execution> 	
                         <id>run-server</id>
                         <goals>
                             <goal>run-server</goal>
@@ -196,8 +218,16 @@
                     </execution>
                 </executions>
                 <configuration>
+                <!-- 
                     <skip>${skipTests}</skip>
                     <installDirectory>${wlp.install.dir}</installDirectory>
+                    -->
+                            <assemblyArtifact>
+            <groupId>com.ibm.websphere.appserver.runtime</groupId>
+            <artifactId>wlp-webProfile7</artifactId>
+            <version>8.5.5.7</version>
+            <type>zip</type>
+        </assemblyArtifact>
                     <userDirectory>${wlp.user.dir}</userDirectory>
                     <configFiles>${server.config.dir}/server.xml</configFiles>
                     <serverName>BonusPayout</serverName>

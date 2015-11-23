@@ -189,6 +189,7 @@
                         <goals>
                             <goal>deploy</goal>
                         </goals>
+                        <!-- Configuring here means we can't deploy with single goal from CLI -->
                         <configuration>
                             <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
                             <appArchive>${warPath}</appArchive>
@@ -203,7 +204,13 @@
                         </goals>
                         <configuration>
                             <!-- Use appArchive instead of appArtifact which doesn't yet offer stripVersion -->
+                            <!-- Works on Mac -->
+                            <!--
                             <appArchive>${warName}.war</appArchive>
+                            <appArchive>${warPath}</appArchive>
+-->
+                            <appArchive>${warName}</appArchive>
+
                             <skip>${skipDeploy}</skip>
                         </configuration>
                     </execution>

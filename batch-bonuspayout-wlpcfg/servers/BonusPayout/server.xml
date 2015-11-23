@@ -47,6 +47,6 @@
             <user name="jane"/>
         </security-role>
     </authorization-roles>
-
+<!--  
     <webApplication id="batch-bonuspayout-application" location="batch-bonuspayout-application.war" name="batch-bonuspayout-application"/>
-</server>
+--></server>

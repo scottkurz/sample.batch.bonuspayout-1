@@ -146,7 +146,6 @@
                             <goal>start-server</goal>
                         </goals>
                         <configuration>
-                            <skip>${activeServer}</skip>
                             <skip>${skipTests}</skip>
                             <applications>${warName}</applications>
                         </configuration>
@@ -159,7 +158,6 @@
                         </goals>
                         <configuration>
                             <skip>${skipTests}</skip>
-                            <skip>${activeServer}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -220,6 +218,7 @@
                         <id>install-app</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <target>
                                 <ant dir="${project.basedir}" antfile="install.if.not.published.by.wdt.xml"/>
                             </target>

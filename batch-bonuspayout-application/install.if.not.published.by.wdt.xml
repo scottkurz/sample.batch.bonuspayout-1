@@ -4,9 +4,17 @@
         <available file="${warPath}.xml" property="published.by.wdt"/>
     </target>
 
-    <target name="run" depends="check.if.published.by.wdt" if="published.by.wdt">
-        <copy file="${warPath}" todir="${server.config.dir}/apps" />
+    <target name="runNotPublished" depends="check.if.published.by.wdt" unless="published.by.wdt">
+        <echo message="Copying WAR into apps directory (unless already up-to-date)."/>
+        <!-- Strip off version -->
+        <copy file="${warPath}" tofile="${server.config.dir}/apps/${warName}.war" />
     </target>
     
+    <target name="runPublished" depends="check.if.published.by.wdt" if="published.by.wdt">
+        <echo message="Not copying WAR into apps directory, since it's published by WDT." if="published.by.wdt"/>
+    </target>
+
+    <target name="run" depends="runNotPublished, runPublished"/>
+
 </project>
 

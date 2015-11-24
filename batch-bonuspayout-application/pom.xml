@@ -42,7 +42,9 @@
         <!-- EDIT ME (or override on command line) -->
         <serverHost>localhost</serverHost>
         <httpsPort>9443</httpsPort>
-        <wlp.install.dir>${project.build.directory}/liberty/wlp</wlp.install.dir>  <!-- liberty plugin default, passed to integration test -->
+
+        <!-- liberty plugin default, passed to integration test -->
+        <wlpInstallDir>${project.build.directory}/liberty/wlp</wlpInstallDir>  
 
         <!-- DON'T EDIT after this point -->
 
@@ -163,9 +165,7 @@
                         <version>8.5.5.7</version>
                         <type>zip</type>
                     </assemblyArtifact>
-                    <!--
                     <installDirectory>${wlp.install.dir}</installDirectory>
--->
                     <userDirectory>${wlp.user.dir}</userDirectory>
                     <configFiles>${server.config.dir}/server.xml</configFiles>
                     <serverName>BonusPayout</serverName>
@@ -194,7 +194,7 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <wlp.install.dir>${wlp.install.dir}</wlp.install.dir>
+                        <wlp.install.dir>${wlpInstallDir}</wlp.install.dir>
                         <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
                         <httpsPort>${httpsPort}</httpsPort>
                         <serverHost>${serverHost}</serverHost>
@@ -225,4 +225,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>use-existing-liberty-if-present</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property><name>wlp.install.dir</name></property>
+            </activation>
+            <properties>
+                <wlpInstallDir>${wlp.install.dir}</wlpInstallDir>
+            </properties>
+        </profile>
+    </profiles>
 </project>

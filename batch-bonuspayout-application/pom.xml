@@ -54,6 +54,7 @@
         <warPath>${project.build.directory}/${warName}-${project.version}.war</warPath>
         <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
         <server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
+        <warPathInApps>${server.config.dir}/apps/${warName}.war</warPathInApps>
     </properties>
 
     <dependencies>

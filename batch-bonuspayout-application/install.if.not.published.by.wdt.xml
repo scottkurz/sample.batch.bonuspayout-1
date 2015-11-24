@@ -1,0 +1,12 @@
+<project name="install.if.not.published.by.wdt" default="run">
+
+    <target name="check.if.published.by.wdt">
+        <available file="${warPath}.xml" property="published.by.wdt"/>
+    </target>
+
+    <target name="run" depends="check.if.published.by.wdt" if="published.by.wdt">
+        <copy file="${warPath}" todir="${server.config.dir}/apps" />
+    </target>
+    
+</project>
+

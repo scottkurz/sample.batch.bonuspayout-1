@@ -147,6 +147,7 @@
                         </goals>
                         <configuration>
                             <skip>${activeServer}</skip>
+                            <skip>${skipTests}</skip>
                             <applications>${warName}</applications>
                         </configuration>
                     </execution>
@@ -157,6 +158,7 @@
                             <goal>stop-server</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipTests}</skip>
                             <skip>${activeServer}</skip>
                         </configuration>
                     </execution>

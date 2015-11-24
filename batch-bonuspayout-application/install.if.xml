@@ -1,0 +1,8 @@
+<project name="install.if" default="run">
+
+    <target name="run">
+        <copy file="${warPath}" todir="${server.config.dir}/apps" overwrite="true" />
+    </target>
+    
+</project>
+

@@ -25,7 +25,6 @@
         <properties.derby.embedded createDatabase="false" databaseName="${shared.resource.dir}/BatchDB" password="pass" user="user"/>
     </dataSource>
 
-    <!-- Use the "traditional" JBATCH schema -->
     <databaseStore dataSourceRef="batchDB" id="BatchDatabaseStore" schema="JBATCH" tablePrefix=""/>
 
     <batchPersistence jobStoreRef="BatchDatabaseStore"/>
@@ -47,6 +46,7 @@
             <user name="jane"/>
         </security-role>
     </authorization-roles>
-<!--  
+
     <webApplication id="batch-bonuspayout-application" location="batch-bonuspayout-application.war" name="batch-bonuspayout-application"/>
---></server>
+
+   </server>

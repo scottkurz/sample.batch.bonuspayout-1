@@ -146,6 +146,7 @@
                             <goal>start-server</goal>
                         </goals>
                         <configuration>
+                            <skip>${activeServer}</skip>
                             <applications>${warName}</applications>
                         </configuration>
                     </execution>
@@ -155,6 +156,9 @@
                         <goals>
                             <goal>stop-server</goal>
                         </goals>
+                        <configuration>
+                            <skip>${activeServer}</skip>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>

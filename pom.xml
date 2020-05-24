@@ -3,7 +3,7 @@
     <parent>
         <groupId>io.openliberty.tools</groupId>
         <artifactId>liberty-maven-app-parent</artifactId>
-        <version>3.1</version>
+        <version>3.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -11,12 +11,9 @@
     <artifactId>batch-bonuspayout-application</artifactId>
     <packaging>war</packaging>
     <!--
-        The use of the liberty-maven 3.x plugin involves a significant rework from 2.0, so marking the next version as 3.0
-        (even though neither the application logic nor the packaged WAR structure has changed much since 1.0).
-
         We are not currently releasing to Maven Central, but may use GitHub releases.
     -->
-    <version>3.0-SNAPSHOT</version>  
+    <version>3.5-SNAPSHOT</version>  
     <name>WAS Liberty Sample - Batch BonusPayout Sample</name>
 
     <licenses>
@@ -54,8 +51,7 @@
        
         <serverHost>localhost</serverHost>
         <httpsPort>9443</httpsPort>
-        <liberty.version>20.0.0.3</liberty.version>
-        <db.url>${wlp.install.dir}/usr/shared/BatchDB</db.url>                                 
+        <liberty.version>20.0.0.5</liberty.version>
         <!-- Use commented-out value since empty value doesn't flow as well. -->
         <startServerJvmOptions>#-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</startServerJvmOptions>
 
@@ -68,20 +64,30 @@
          --> 
         <wlp.install.dir>${project.build.directory}/liberty/wlp</wlp.install.dir>  
 
+         <!-- Neds to be defined in the project, not a built-in like you might think -->
+        <wlp.user.dir>${wlp.install.dir}/usr</wlp.user.dir>
+
+        <derby.url>${wlp.user.dir}/shared/BatchDB</derby.url>
+        <liberty.defaultVar.derby.url>${derby.url}</liberty.defaultVar.derby.url>
+
+
         <batch.props.directory>${project.basedir}/batchprops</batch.props.directory>
-        <shared.resource.directory>${wlp.install.dir}/usr/shared/resources</shared.resource.directory>
+        <shared.resource.directory>${wlp.user.dir}/shared/resources</shared.resource.directory>
         <ddl.dir>${project.basedir}/ddls</ddl.dir>
         <wlpServerName>BonusPayout</wlpServerName>
         <derby.version>10.11.1.1</derby.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!--
         <packaging.include>minify</packaging.include>
         <packaging.type>jar</packaging.type>
+        -->
     </properties>
     
     <profiles>
+        <!--
         <profile>
             <id>usr-package</id>
             <properties>
@@ -89,6 +95,7 @@
                 <packaging.type>zip</packaging.type>
             </properties>        
         </profile>    
+        -->
         <profile>
             <id>use-existing-liberty-if-present</id>
             <activation>
@@ -139,11 +146,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Just add one dependency on all EE 7 APIs -->
+         <!-- Aggregate of Jakarta EE APIs -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>8.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -174,10 +181,10 @@
                                 <echo>********</echo>
                                 <echo>********</echo>
                                 <echo>******** Database location will be at URL: </echo>
-                                <echo>******** ${db.url}</echo>
+                                <echo>******** ${derby.url}</echo>
                                 <echo>********</echo>
-                                <echo>******** Liberty install location will be at : </echo>
-                                <echo>******** ${wlp.install.dir}</echo>
+                                <echo>******** Liberty user dir will be at : </echo>
+                                <echo>******** ${wlp.user.dir}</echo>
                                 <echo>********</echo>
                                 <echo>********</echo>
                             </tasks>
@@ -202,12 +209,12 @@
                 </dependencies>
                 <configuration>
                     <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-                    <url>jdbc:derby:${db.url};create=true</url>
+                    <url>jdbc:derby:${derby.url};create=true</url>
                 </configuration>
                 <executions>
                     <execution>
                         <id>drop-db-before-test-if-any</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
@@ -220,7 +227,7 @@
                     </execution>
                     <execution>
                         <id>create-db</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
@@ -234,12 +241,12 @@
                     </execution>
                     <execution>
                         <id>shutdown-database-so-that-test-can-run</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <url>jdbc:derby:${db.url};shutdown=true</url>
+                            <url>jdbc:derby:${derby.url};shutdown=true</url>
                             <skipOnConnectionError>true</skipOnConnectionError>
                         </configuration>
                     </execution>
@@ -277,15 +284,17 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <packagingExcludes>pom.xml</packagingExcludes>
                     <stripVersion>true</stripVersion>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
+                <!-- typically get from parent, this is workaround -->
+                <version>3.2.1</version> 
                 <extensions>true</extensions>
                 <configuration>
+                    <!-- Use instead of Open Liberty to get Admin Center feature -->
                     <assemblyArtifact>
                         <groupId>com.ibm.websphere.appserver.runtime</groupId>
                         <artifactId>wlp-javaee8</artifactId>
@@ -293,14 +302,13 @@
                         <type>zip</type>
                     </assemblyArtifact>
                     <installDirectory>${wlpInstallDir}</installDirectory>
-                    <userDirectory>${wlpUserDir}</userDirectory>
+                    <userDirectory>wlpUserDir</userDirectory>
                     <serverName>${wlpServerName}</serverName>
                     <bootstrapProperties>
-                         <db.url>${db.url}</db.url>
+                         <derby.url>${derby.url}</derby.url>
                          <appLocation>${project.artifactId}.war</appLocation>
                     </bootstrapProperties>
-                    <include>${packaging.include}</include>
-                    <packageType>${packaging.type}</packageType>
+                    <include>runnable</include>
                 </configuration>
             </plugin>
             <plugin>
@@ -309,7 +317,7 @@
                 <version>2.19.1</version>
                 <executions>
                     <execution>
-                        <id>integration-test</id>
+                        <id>default-cli</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>

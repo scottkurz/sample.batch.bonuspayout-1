@@ -9,8 +9,13 @@
         <!-- This sample can work without CDI configured, but the use of CDI is always strongly encouraged with batch. -->
         <feature>cdi-2.0</feature>
 
-        <!-- Admin Center Java Batch tool, don't download by default  -->
+        <!-- Admin Center Java Batch tool 
         <feature>adminCenter-1.0</feature>
+        -->
+
+        <!-- For connection validation -->
+        <feature>restConnector-2.0</feature>
+
     </featureManager>
 
 <!-- A user of the Admin Center Java Batch tool must ALSO be an administrator.  This is independent of whatever batch roles,
@@ -18,11 +23,9 @@
      Leave this commented out for now -->
     <administrator-role>
       <user>bob</user>
-   </administrator-role>
+    </administrator-role>
 
-    <!-- To access this server from a remote client add a host attribute to
-        the following element, e.g. host="*" -->
-    <httpEndpoint httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
 
     <library id="DerbyLib">
         <fileset dir="${shared.resource.dir}/derby"/>
@@ -38,8 +41,8 @@
 
     <dataSource id="batchDB" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
-        <!-- The 'db.url' databaseName is set in bootstrap.properties -->
-        <properties.derby.embedded createDatabase="create" databaseName="${db.url}" user="user" password="pass"/>
+         <!-- The 'derby.url' databaseName is set in bootstrap.properties -->
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass" />
     </dataSource>
 
     <!--  In this sample we'll use the same database (as the runtime DB) but use a different DS to access it.
@@ -48,7 +51,7 @@
     -->
     <dataSource id="appDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="${db.url}" user="user" password="pass"/>
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
     </dataSource>
 
     <!-- 
@@ -60,7 +63,7 @@
            <dataSource id="appReadOnlyDB" jndiName="jdbc/ReadOnlyDS">
          -->
         <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="${db.url}" user="user" password="pass"/>
+        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
         <connectionManager enableSharingForDirectLookups="false"/>
     </dataSource>
 
@@ -68,7 +71,10 @@
 
     <batchPersistence jobStoreRef="BatchDatabaseStore"/>
 
+    <!-- For WDT -->
+    <!--
     <applicationMonitor updateTrigger="mbean"/>
+    -->
 
     <keyStore id="defaultKeyStore" password="Liberty"/>
 
@@ -89,5 +95,15 @@
             <user name="sam"/>
         </security-role>
     </authorization-roles>
+
+
+    <application id="batch-bonuspayout-application" location="batch-bonuspayout-application.war" name="batch-bonuspayout-application" type="war">
+        <application-bnd>
+            <security-role name="JOBSTARTER">
+                <user name="sam" />
+                <run-as userid="sam" password="sampwd"/>
+            </security-role>
+        </application-bnd>
+    </application>
 
 </server>

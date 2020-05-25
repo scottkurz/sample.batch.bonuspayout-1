@@ -6,7 +6,6 @@
         <feature>localConnector-1.0</feature>
         <feature>appSecurity-2.0</feature>
 
-        <!-- This sample can work without CDI configured, but the use of CDI is always strongly encouraged with batch. -->
         <feature>cdi-2.0</feature>
 
         <!-- Admin Center Java Batch tool 
@@ -15,6 +14,9 @@
 
         <!-- For connection validation -->
         <feature>restConnector-2.0</feature>
+
+        <!-- For startup bean -->
+        <feature>ejbLite-3.2</feature>
 
     </featureManager>
 

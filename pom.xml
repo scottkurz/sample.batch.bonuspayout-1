@@ -302,7 +302,7 @@
                         <type>zip</type>
                     </assemblyArtifact>
                     <installDirectory>${wlpInstallDir}</installDirectory>
-                    <userDirectory>wlpUserDir</userDirectory>
+                    <userDirectory>${wlpUserDir}</userDirectory>
                     <serverName>${wlpServerName}</serverName>
                     <bootstrapProperties>
                          <derby.url>${derby.url}</derby.url>

@@ -26,9 +26,10 @@ import javax.ejb.Singleton;
 @RunAs("JOBSTARTER")
 public class StartupJobRunner {
 
-    @Schedule(hour = "*", minute = "*", second = "*/20", persistent = false)
+    //@Schedule(hour = "*", minute = "*", second = "*/20", persistent = false)
+    @Schedule(hour = "*", minute = "*/1", persistent = false)
     public void initialize() {
-        System.out.println("\n\nRunning batch job from the ControllerBean startup EJB\n\n");
+        System.out.println("\n\nRunning batch job from the ControllerBean startup EJB.\nSee batch job logs for results.\n\n");
         try {
             JobOperator jobOperator = BatchRuntime.getJobOperator();
             jobOperator.start("BonusPayoutJob", null);

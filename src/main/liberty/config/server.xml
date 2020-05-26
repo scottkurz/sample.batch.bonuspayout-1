@@ -43,7 +43,6 @@
 
     <dataSource id="batchDB" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
-         <!-- The 'derby.url' databaseName is set in bootstrap.properties -->
         <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass" />
     </dataSource>
 

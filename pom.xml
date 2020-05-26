@@ -304,10 +304,6 @@
                     <installDirectory>${wlpInstallDir}</installDirectory>
                     <userDirectory>${wlpUserDir}</userDirectory>
                     <serverName>${wlpServerName}</serverName>
-                    <bootstrapProperties>
-                         <derby.url>${derby.url}</derby.url>
-                         <appLocation>${project.artifactId}.war</appLocation>
-                    </bootstrapProperties>
                     <include>runnable</include>
                 </configuration>
             </plugin>
